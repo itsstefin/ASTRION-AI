@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASTRION AI</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #080d20;
+            color: white;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            border-bottom: 1px solid #202b4b;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #70baff;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            color: #a78bfa;
+        }
+
+        .status {
+            color: #65e6b0;
+            font-size: 12px;
+        }
+
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            background: #0d1530;
+            border-right: 1px solid #202b4b;
+            padding: 20px;
+        }
+
+        .new-chat {
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .sidebar h3 {
+            color: #8fa5d5;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        #history {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .history-item button {
+            flex: 1;
+            text-align: left;
+            background: #152142;
+            padding: 11px;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .history-item .delete {
+            flex: none;
+            padding: 10px;
+            background: #382039;
+            color: #ffaaaa;
+        }
+
+        button {
+            background: linear-gradient(135deg, #287dff, #8849ff);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        /* MAIN CONTENT */
+
+        main {
+            flex: 1;
+            max-width: 950px;
+            margin: 45px auto;
+            padding: 20px;
+            text-align: center;
+            min-width: 0;
+        }
+
+        .orb {
+            width: 95px;
+            height: 95px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #168cff, #873dff);
+            box-shadow: 0 0 45px #544bff;
+            display: grid;
+            place-items: center;
+            font-size: 50px;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 44px;
+            letter-spacing: 3px;
+        }
+
+        h1 span {
+            color: #8b8cff;
+        }
+
+        .tagline {
+            color: #aab5d1;
+            margin-top: 12px;
+        }
+
+        .subjects {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 35px 0;
+        }
+
+        .subject {
+            padding: 18px 8px;
+            border: 1px solid #35446e;
+            background: #111a35;
+            border-radius: 12px;
+            color: #dce6ff;
+        }
+
+        .chat-box {
+            display: flex;
+            gap: 10px;
+            background: #111a35;
+            border: 1px solid #46558a;
+            padding: 10px;
+            border-radius: 14px;
+        }
+
+        input {
+            flex: 1;
+            min-width: 0;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 12px;
+            font-size: 15px;
+        }
+
+        #response {
+            margin-top: 25px;
+            color: #c4d0ee;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            text-align: left;
+            background: #111a35;
+            padding: 18px;
+            border-radius: 12px;
+        }
+
+        footer {
+            text-align: center;
+            color: #7885a5;
+            padding: 20px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #202b4b;
+            }
+
+            #history {
+                max-height: 160px;
+                overflow-y: auto;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .subjects {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">A✦ <span>ASTRION AI</span></div>
+    <div class="status">● SYSTEM ONLINE</div>
+</header>
+
+<div class="layout">
+
+    <!-- CONVERSATION LIBRARY -->
+
+    <aside class="sidebar">
+
+        <button class="new-chat" onclick="newChat()">
+            + New Chat
+        </button>
+
+        <h3>YOUR CONVERSATIONS</h3>
+
+        <div id="history">
+            Loading history...
+        </div>
+
+    </aside>
+
+    <!-- MAIN CHAT -->
+
+    <main>
+
+        <div class="orb">A</div>
+
+        <h1>ASTRION <span>AI</span></h1>
+
+        <p class="tagline">
+            Beyond Intelligence. Into Innovation.
+        </p>
+
+        <section class="subjects">
+            <div class="subject">⚛ Physics</div>
+            <div class="subject">∑ Mathematics</div>
+            <div class="subject">⚙ Mechanics</div>
+            <div class="subject">💻 Coding</div>
+            <div class="subject">🧠 Artificial Intelligence</div>
+            <div class="subject">🤖 Robotics</div>
+        </section>
+
+        <div class="chat-box">
+
+            <input
+                id="question"
+                type="text"
+                placeholder="Ask ASTRION anything about STEM..."
+                onkeydown="if(event.key === 'Enter') askAstrion()"
+            >
+
+            <button onclick="askAstrion()">Send</button>
+
+        </div>
+
+        <div id="response">
+            Your STEM journey begins here.
+        </div>
+
+    </main>
+
+</div>
+
+<footer>
+    ASTRION AI © 2026 | Built for Innovation
+</footer>
+
+<script>
+
+let currentConversationId = null;
+
+async function askAstrion() {
+
+    const question = document.getElementById("question").value.trim();
+    const response = document.getElementById("response");
+
+    if (!question) {
+        response.textContent = "Please enter a question.";
+        return;
+    }
+
+    response.textContent = "ASTRION AI is thinking...";
+
+    try {
+
+        const result = await fetch("/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: question,
+                conversation_id: currentConversationId
+            })
+        });
+
+        const data = await result.json();
+
+        if (!result.ok) {
+            throw new Error(data.reply || "Something went wrong.");
+        }
+
+        currentConversationId = data.conversation_id;
+
+        response.textContent = data.reply;
+
+        document.getElementById("question").value = "";
+
+        loadHistory();
+
+    } catch (error) {
+
+        response.textContent = "Connection error: " + error.message;
+
+    }
+}
+
+
+// CREATE NEW CHAT
+
+function newChat() {
+
+    currentConversationId = null;
+
+    document.getElementById("question").value = "";
+
+    document.getElementById("response").textContent =
+        "Your new STEM journey begins here.";
+
+}
+
+
+// LOAD CONVERSATION HISTORY
+
+async function loadHistory() {
+
+    const history = document.getElementById("history");
+
+    try {
+
+        const result = await fetch("/conversations");
+        const conversations = await result.json();
+
+        history.innerHTML = "";
+
+        if (conversations.length === 0) {
+            history.textContent = "No conversations yet.";
+            return;
+        }
+
+        conversations.forEach(chat => {
+
+            const item = document.createElement("div");
+            item.className = "history-item";
+
+            const openButton = document.createElement("button");
+            openButton.textContent = chat.title;
+            openButton.onclick = () => openChat(chat.id);
+
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "×";
+            deleteButton.className = "delete";
+            deleteButton.title = "Delete conversation";
+            deleteButton.onclick = () => deleteChat(chat.id);
+
+            item.appendChild(openButton);
+            item.appendChild(deleteButton);
+
+            history.appendChild(item);
+
+        });
+
+    } catch (error) {
+
+        history.textContent = "Unable to load history.";
+
+    }
+
+}
+
+
+// OPEN OLD CONVERSATION
+
+async function openChat(id) {
+
+    try {
+
+        const result = await fetch("/conversations/" + id);
+        const messages = await result.json();
+
+        if (!result.ok) {
+            throw new Error(messages.error || "Unable to open chat.");
+        }
+
+        currentConversationId = id;
+
+        const response = document.getElementById("response");
+
+        response.textContent = messages.map(message =>
+            (message.role === "user" ? "YOU: " : "ASTRION AI: ") +
+            message.content
+        ).join("\n\n");
+
+    } catch (error) {
+
+        document.getElementById("response").textContent = error.message;
+
+    }
+
+}
+
+
+// DELETE CONVERSATION
+
+async function deleteChat(id) {
+
+    if (!confirm("Delete this conversation?")) {
+        return;
+    }
+
+    try {
+
+        const result = await fetch("/conversations/" + id, {
+            method: "DELETE"
+        });
+
+        if (!result.ok) {
+            throw new Error("Unable to delete conversation.");
+        }
+
+        if (currentConversationId === id) {
+            newChat();
+        }
+
+        loadHistory();
+
+    } catch (error) {
+
+        alert(error.message);
+
+    }
+
+}
+
+
+// LOAD HISTORY WHEN WEBSITE OPENS
+
+loadHistory();
+
+</script>
+
+</body>
+</html>
